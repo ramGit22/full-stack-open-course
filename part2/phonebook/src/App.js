@@ -54,7 +54,7 @@ const App = () => {
         id: uuidv4(),
       })
       .then((response) => {
-        setPersons([persons.concat(response.data)]);
+        setPersons(persons.concat(response.data));
       });
 
     setNewName("");
@@ -62,9 +62,14 @@ const App = () => {
   };
 
   const handleDelete = (id) => {
-    personServices.deletePerson(id).then(() => {
-      setPersons(persons.filter((person) => person.id !== id));
-    });
+    const personToDelete = persons.find((person) => person.id === id);
+    if (personToDelete) {
+      if (window.confirm(`Delete ${personToDelete.name}`)) {
+        personServices.deletePerson(id).then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        });
+      }
+    }
   };
   console.log("filteredPersons", filteredPersons);
 
