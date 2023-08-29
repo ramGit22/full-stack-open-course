@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
@@ -19,7 +20,9 @@ const App = () => {
 
   useEffect(() => {
     const filteredResult = persons.filter((person) =>
-      person.name.toLowerCase().includes(filterText.toLowerCase())
+      person.name && filterText
+        ? person.name.toLowerCase().includes(filterText.toLowerCase())
+        : true
     );
     setFilteredPersons(filteredResult);
   }, [filterText, persons]);
@@ -48,15 +51,22 @@ const App = () => {
       .create({
         name: newName,
         number: newNumber,
-        id: persons.length + 1,
+        id: uuidv4(),
       })
       .then((response) => {
-        setPersons(persons.concat(response.data));
+        setPersons([persons.concat(response.data)]);
       });
 
     setNewName("");
     setNewNumber("");
   };
+
+  const handleDelete = (id) => {
+    personServices.deletePerson(id).then(() => {
+      setPersons(persons.filter((person) => person.id !== id));
+    });
+  };
+  console.log("filteredPersons", filteredPersons);
 
   return (
     <div>
@@ -71,7 +81,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons filteredPersons={filteredPersons} handleDelete={handleDelete} />
     </div>
   );
 };
