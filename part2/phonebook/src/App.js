@@ -42,23 +42,38 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} already added to phonebook`);
-      setNewName("");
-      return;
-    }
-    personServices
-      .create({
-        name: newName,
-        number: newNumber,
-        id: uuidv4(),
-      })
-      .then((response) => {
-        setPersons(persons.concat(response.data));
-      });
+    const matchedPerson = persons.find((person) => person.name === newName);
+    console.log("matchedPerson", matchedPerson);
+    if (matchedPerson) {
+      if (
+        window.confirm(
+          `${newName} already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        personServices
+          .update({ ...matchedPerson, number: newNumber })
+          .then((response) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === matchedPerson.id ? response.data : person
+              )
+            );
+          });
+      }
+    } else {
+      personServices
+        .create({
+          name: newName,
+          number: newNumber,
+          id: uuidv4(),
+        })
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+        });
 
-    setNewName("");
-    setNewNumber("");
+      setNewName("");
+      setNewNumber("");
+    }
   };
 
   const handleDelete = (id) => {
