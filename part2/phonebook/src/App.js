@@ -46,7 +46,6 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const matchedPerson = persons.find((person) => person.name === newName);
-    console.log("matchedPerson", matchedPerson);
     if (matchedPerson) {
       if (
         window.confirm(
@@ -62,7 +61,7 @@ const App = () => {
               )
             );
             setShow(true);
-            setMessage(`${newName} number changed `);
+            setMessage(`${newName}'s number changed `);
             setTimeout(() => {
               setMessage(null);
               setShow(false);
