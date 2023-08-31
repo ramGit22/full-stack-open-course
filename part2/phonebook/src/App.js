@@ -14,6 +14,7 @@ const App = () => {
   const [filteredPersons, setFilteredPersons] = useState(persons);
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     personServices.getAll().then((response) => {
@@ -42,10 +43,20 @@ const App = () => {
   const handleNumberChange = (e) => {
     setNewNumber(e.target.value);
   };
+  const showNotification = (message, isError = false) => {
+    setMessage(message);
+    setError(isError);
+    setShow(true);
+    setTimeout(() => {
+      setMessage(null);
+      setShow(false);
+    }, 5000);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const matchedPerson = persons.find((person) => person.name === newName);
+    console.log("matchedPerson", matchedPerson);
     if (matchedPerson) {
       if (
         window.confirm(
@@ -60,12 +71,13 @@ const App = () => {
                 person.id === matchedPerson.id ? response.data : person
               )
             );
-            setShow(true);
-            setMessage(`${newName}'s number changed `);
-            setTimeout(() => {
-              setMessage(null);
-              setShow(false);
-            }, 5000);
+            showNotification(`${newName}'s number changed `);
+          })
+          .catch(() => {
+            showNotification(
+              `Information of ${newName} has already been removed from server `,
+              true
+            );
           });
       }
     } else {
@@ -77,13 +89,9 @@ const App = () => {
         })
         .then((response) => {
           setPersons(persons.concat(response.data));
-          setShow(true);
-          setMessage(`${newName} added`);
+          showNotification(`${newName} added`);
         });
-      setTimeout(() => {
-        setMessage(null);
-        setShow(false);
-      }, 5000);
+
       setNewName("");
       setNewNumber("");
     }
@@ -104,7 +112,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {show ? <Notification message={message} /> : null}
+      {show ? <Notification message={message} error={error} /> : null}
       <Filter handleFilterChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm
