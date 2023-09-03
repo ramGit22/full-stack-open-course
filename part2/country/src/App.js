@@ -5,6 +5,7 @@ const App = () => {
   const [countries, setCountries] = useState([]);
   const [filter, setFilter] = useState("");
   const [filteredCountries, setFilteredCountries] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     countryServices.getAll().then((response) => setCountries(response.data));
@@ -24,6 +25,10 @@ const App = () => {
     console.log(event.target.value);
   };
 
+  const displayCountry = (country) => {
+    setSelected(country);
+  };
+
   return (
     <div>
       find countries <input onChange={handleChange} />
@@ -32,10 +37,39 @@ const App = () => {
           {filteredCountries.length > 10 && <p>`too many countries`</p>}
           {filteredCountries.length <= 10 && filteredCountries.length > 1 && (
             <ul>
-              {filteredCountries.map((country) => (
-                <li key={country.name.common}>{country.name.common}</li>
+              {filteredCountries.map((country, index) => (
+                <div key={country.cioc || index}>
+                  <li style={{ display: "inline-block" }}>
+                    {country.name.common}
+                  </li>{" "}
+                  <button
+                    style={{ display: "inline-block" }}
+                    onClick={() => displayCountry(country)}
+                  >
+                    show
+                  </button>
+                </div>
               ))}
             </ul>
+          )}
+
+          {selected && (
+            <div>
+              <h1>{selected.name.common}</h1>
+              <p>capital: {selected.capital}</p>
+              <p>area: {selected.area}</p>
+              <h2>Languages:</h2>
+              <ul>
+                {Object.values(selected.languages).map((lang, index) => (
+                  <li key={selected.name.cioc || index}>{lang}</li>
+                ))}
+              </ul>
+              <img
+                src={selected.flags.svg}
+                alt={selected.flags.alt}
+                width="100px"
+              />{" "}
+            </div>
           )}
 
           {filteredCountries.length === 1 && (
@@ -46,9 +80,13 @@ const App = () => {
 
               <h2>Languages:</h2>
               <ul>
-                {Object.values(filteredCountries[0].languages).map((lang) => (
-                  <li key={filteredCountries[0].name.common}>{lang}</li>
-                ))}
+                {Object.values(filteredCountries[0].languages).map(
+                  (lang, index) => (
+                    <li key={filteredCountries[0].name.cioc || index}>
+                      {lang}
+                    </li>
+                  )
+                )}
               </ul>
 
               <img
