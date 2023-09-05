@@ -52,7 +52,9 @@ const App = () => {
             />
           )}
 
-          {selected && <SelectedCountryDetails selected={selected} />}
+          {selected && filteredCountries.length != 1 && (
+            <SelectedCountryDetails selected={selected} />
+          )}
 
           {filteredCountries.length === 1 && (
             <FilteredCountryDetail
