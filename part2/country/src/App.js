@@ -6,6 +6,7 @@ const App = () => {
   const [filter, setFilter] = useState("");
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [weather, setWeather] = useState();
 
   useEffect(() => {
     countryServices.getAll().then((response) => setCountries(response.data));
@@ -19,6 +20,14 @@ const App = () => {
     );
     setFilteredCountries(filteredResult);
   }, [filter, countries]);
+
+  useEffect(() => {
+    if (filteredCountries.length > 0) {
+      countryServices
+        .getWeather(filteredCountries[0].capital[0])
+        .then((response) => setWeather(response.data));
+    }
+  }, [filteredCountries]);
 
   const handleChange = (event) => {
     setFilter(event.target.value);
@@ -94,6 +103,11 @@ const App = () => {
                 alt={filteredCountries[0].flags.alt}
                 width="100px"
               />
+
+              <h1>weather in {filteredCountries[0].capital[0]}</h1>
+              <p>Temperature {weather.current.temp_c} Celcius </p>
+              <img src=" https://openweathermap.org/img/wn/10d@2x.png" />
+              <p>Wind {weather.current.wind_kph} km/hr</p>
             </div>
           )}
         </>
