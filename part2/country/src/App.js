@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import countryServices from "./services/country";
+import FilterComponent from "./components/FilterComponent";
+import CountryList from "./components/CountryList";
+import SelectedCountryDetails from "./components/SelectedCountryDetails";
+import FilteredCountryDetail from "./components/FilteredCountryDetail";
 
 const App = () => {
   const [countries, setCountries] = useState([]);
@@ -11,8 +15,6 @@ const App = () => {
   useEffect(() => {
     countryServices.getAll().then((response) => setCountries(response.data));
   }, []);
-
-  console.log("filteredCountries", filteredCountries);
 
   useEffect(() => {
     const filteredResult = countries.filter((country) =>
@@ -31,7 +33,6 @@ const App = () => {
 
   const handleChange = (event) => {
     setFilter(event.target.value);
-    console.log(event.target.value);
   };
 
   const displayCountry = (country) => {
@@ -40,75 +41,24 @@ const App = () => {
 
   return (
     <div>
-      find countries <input onChange={handleChange} />
+      <FilterComponent handleChange={handleChange} />
       {filter && (
         <>
           {filteredCountries.length > 10 && <p>`too many countries`</p>}
           {filteredCountries.length <= 10 && filteredCountries.length > 1 && (
-            <ul>
-              {filteredCountries.map((country, index) => (
-                <div key={country.cioc || index}>
-                  <li style={{ display: "inline-block" }}>
-                    {country.name.common}
-                  </li>{" "}
-                  <button
-                    style={{ display: "inline-block" }}
-                    onClick={() => displayCountry(country)}
-                  >
-                    show
-                  </button>
-                </div>
-              ))}
-            </ul>
+            <CountryList
+              filteredCountries={filteredCountries}
+              displayCountry={displayCountry}
+            />
           )}
 
-          {selected && (
-            <div>
-              <h1>{selected.name.common}</h1>
-              <p>capital: {selected.capital}</p>
-              <p>area: {selected.area}</p>
-              <h2>Languages:</h2>
-              <ul>
-                {Object.values(selected.languages).map((lang, index) => (
-                  <li key={selected.name.cioc || index}>{lang}</li>
-                ))}
-              </ul>
-              <img
-                src={selected.flags.svg}
-                alt={selected.flags.alt}
-                width="100px"
-              />{" "}
-            </div>
-          )}
+          {selected && <SelectedCountryDetails selected={selected} />}
 
           {filteredCountries.length === 1 && (
-            <div>
-              <h1>{filteredCountries[0].name.common}</h1>
-              <p>capital: {filteredCountries[0].capital}</p>
-              <p>area: {filteredCountries[0].area}</p>
-
-              <h2>Languages:</h2>
-              <ul>
-                {Object.values(filteredCountries[0].languages).map(
-                  (lang, index) => (
-                    <li key={filteredCountries[0].name.cioc || index}>
-                      {lang}
-                    </li>
-                  )
-                )}
-              </ul>
-
-              <img
-                src={filteredCountries[0].flags.svg}
-                alt={filteredCountries[0].flags.alt}
-                width="100px"
-              />
-
-              <h1>weather in {filteredCountries[0].capital[0]}</h1>
-              <p>Temperature {weather.current.temp_c} Celcius </p>
-              <img src=" https://openweathermap.org/img/wn/10d@2x.png" />
-              <p>Wind {weather.current.wind_kph} km/hr</p>
-            </div>
+            <FilteredCountryDetail
+              filteredCountries={filteredCountries}
+              weather={weather}
+            />
           )}
         </>
       )}
