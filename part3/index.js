@@ -25,8 +25,12 @@ const persons = [
   },
 ];
 
-app.get("/api/persons", (req, res) => {
-  res.send(persons);
+app.get("/info", (req, res) => {
+  const currentTime = new Date();
+  res.send(`
+  <p>Phonebook has info for ${persons.length} people</p>
+  <p>${currentTime}</p>
+  `);
 });
 
 app.listen(port, () => {
