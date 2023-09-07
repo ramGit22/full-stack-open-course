@@ -43,6 +43,17 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const personExist = persons.some((person) => person.id === id);
+  const filteredArray = persons.filter((p) => p.id !== id);
+  if (personExist) {
+    res.send(filteredArray);
+  } else {
+    res.status(404).send({ error: "Person not found" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
