@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 const persons = [
@@ -51,6 +52,21 @@ app.delete("/api/persons/:id", (req, res) => {
     res.send(filteredArray);
   } else {
     res.status(404).send({ error: "Person not found" });
+  }
+});
+
+app.post("/api/persons", (req, res) => {
+  try {
+    const data = req.body;
+    const newPerson = {
+      id: Math.floor(Math.random() * 1000000),
+      name: data.name,
+      number: data.number,
+    };
+    persons.push(newPerson);
+    res.json(persons);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
