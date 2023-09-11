@@ -56,8 +56,12 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  try {
-    const data = req.body;
+  const data = req.body;
+  if (data.name === "" || data.number === "") {
+    res.status(404).send({ error: "name or number is missing" });
+  } else if (persons.some((p) => p.name === data.name)) {
+    res.status(404).send({ error: "name already exists" });
+  } else {
     const newPerson = {
       id: Math.floor(Math.random() * 1000000),
       name: data.name,
@@ -65,8 +69,6 @@ app.post("/api/persons", (req, res) => {
     };
     persons.push(newPerson);
     res.json(persons);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
   }
 });
 
