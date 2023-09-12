@@ -1,6 +1,8 @@
+const morgan = require("morgan");
 const express = require("express");
 const app = express();
 app.use(express.json());
+app.use(morgan("tiny"));
 const port = 3000;
 
 const persons = [
@@ -25,6 +27,12 @@ const persons = [
     number: "39-23-6423122",
   },
 ];
+
+morgan.token("req-body", (req, res) => {
+  return JSON.stringify(req.body);
+});
+
+app.use(morgan(":method :url :status :req-body"));
 
 app.get("/info", (req, res) => {
   const currentTime = new Date();
