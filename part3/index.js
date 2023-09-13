@@ -1,9 +1,12 @@
 const morgan = require("morgan");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
-const port = 3000;
+app.use(cors());
+
+const port = 3001;
 
 const persons = [
   {
@@ -33,6 +36,10 @@ morgan.token("req-body", (req, res) => {
 });
 
 app.use(morgan(":method :url :status :req-body"));
+
+app.get("/api/persons", (req, res) => {
+  res.send(persons);
+});
 
 app.get("/info", (req, res) => {
   const currentTime = new Date();
