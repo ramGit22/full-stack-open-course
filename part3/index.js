@@ -1,12 +1,11 @@
 const morgan = require("morgan");
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors());
-
-const port = 3001;
 
 const persons = [
   {
@@ -87,6 +86,6 @@ app.post("/api/persons", (req, res) => {
   }
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log(`listening on port ${port}`);
 });
