@@ -28,7 +28,6 @@ app.post("/api/persons", (request, response) => {
   if (body.name === undefined) {
     return response.status(400).json({ error: "name missing" });
   }
-  console.log("body", body);
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -36,6 +35,14 @@ app.post("/api/persons", (request, response) => {
 
   person.save().then((savedNote) => {
     response.json(savedNote);
+  });
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  debugger;
+  Person.findByIdAndDelete(id).then(() => {
+    res.status(204).end();
   });
 });
 
