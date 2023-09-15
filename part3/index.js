@@ -22,6 +22,23 @@ app.get("/api/persons", (request, response) => {
   });
 });
 
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  if (body.name === undefined) {
+    return response.status(400).json({ error: "name missing" });
+  }
+  console.log("body", body);
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
+
+  person.save().then((savedNote) => {
+    response.json(savedNote);
+  });
+});
+
 app.get("/info", (req, res) => {
   const currentTime = new Date();
   res.send(`
@@ -51,22 +68,22 @@ app.delete("/api/persons/:id", (req, res) => {
   }
 });
 
-app.post("/api/persons", (req, res) => {
-  const data = req.body;
-  if (data.name === "" || data.number === "") {
-    res.status(404).send({ error: "name or number is missing" });
-  } else if (persons.some((p) => p.name === data.name)) {
-    res.status(404).send({ error: "name already exists" });
-  } else {
-    const newPerson = {
-      id: Math.floor(Math.random() * 1000000),
-      name: data.name,
-      number: data.number,
-    };
-    persons.push(newPerson);
-    res.json(persons);
-  }
-});
+// app.post("/api/persons", (req, res) => {
+//   const data = req.body;
+//   if (data.name === "" || data.number === "") {
+//     res.status(404).send({ error: "name or number is missing" });
+//   } else if (persons.some((p) => p.name === data.name)) {
+//     res.status(404).send({ error: "name already exists" });
+//   } else {
+//     const newPerson = {
+//       id: Math.floor(Math.random() * 1000000),
+//       name: data.name,
+//       number: data.number,
+//     };
+//     persons.push(newPerson);
+//     res.json(persons);
+//   }
+// });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
