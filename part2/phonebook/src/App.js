@@ -37,7 +37,6 @@ const App = () => {
 
   const handleNameChange = (e) => {
     setNewName(e.target.value);
-    console.log(e.target.value);
   };
 
   const handleNumberChange = (e) => {
@@ -56,7 +55,6 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const matchedPerson = persons.find((person) => person.name === newName);
-    console.log("matchedPerson", matchedPerson);
     if (matchedPerson) {
       if (
         window.confirm(
@@ -90,6 +88,9 @@ const App = () => {
         .then((response) => {
           setPersons(persons.concat(response.data));
           showNotification(`${newName} added`);
+        })
+        .catch((error) => {
+          showNotification(error.response.data.error);
         });
 
       setNewName("");
@@ -107,7 +108,6 @@ const App = () => {
       }
     }
   };
-  console.log("filteredPersons", filteredPersons);
 
   return (
     <div>
