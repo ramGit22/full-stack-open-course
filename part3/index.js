@@ -68,22 +68,15 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.get("/info", (req, res) => {
-  const currentTime = new Date();
-  res.send(`
-  <p>Phonebook has info for ${persons.length} people</p>
-  <p>${currentTime}</p>
-  `);
-});
-
-app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find((p) => p.id === id);
-  if (person) {
-    res.send(person);
-  } else {
-    res.status(404).send({ error: "Person not found" });
-  }
+app.get("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  Person.findById(id)
+    .then((person) => {
+      res.send(person);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -97,22 +90,17 @@ app.delete("/api/persons/:id", (req, res) => {
   }
 });
 
-// app.post("/api/persons", (req, res) => {
-//   const data = req.body;
-//   if (data.name === "" || data.number === "") {
-//     res.status(404).send({ error: "name or number is missing" });
-//   } else if (persons.some((p) => p.name === data.name)) {
-//     res.status(404).send({ error: "name already exists" });
-//   } else {
-//     const newPerson = {
-//       id: Math.floor(Math.random() * 1000000),
-//       name: data.name,
-//       number: data.number,
-//     };
-//     persons.push(newPerson);
-//     res.json(persons);
-//   }
-// });
+app.get("/info", (req, res, next) => {
+  const currentTime = new Date();
+  Person.countDocuments({})
+    .then((count) => {
+      res.send(`
+  <p>Phonebook has info for ${count} people</p>
+  <p>${currentTime}</p>
+  `);
+    })
+    .catch((error) => next(error));
+});
 
 app.use(errorHandler);
 
