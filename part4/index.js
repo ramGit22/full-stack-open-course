@@ -15,9 +15,9 @@ mongoose
     console.log("error connecting to MongoDb:", error.message);
   });
 
-app.use("/api/blogs", blogRouter);
 app.use(cors());
 app.use(express.json());
+app.use("/api/blogs", blogRouter);
 
 const PORT = 3003;
 app.listen(PORT, () => {
