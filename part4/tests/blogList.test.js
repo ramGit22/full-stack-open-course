@@ -32,7 +32,7 @@ describe('blogList', () => {
   })
 })
 
-test.only('should add a new blog post', async () => {
+test('should add a new blog post', async () => {
   const newBlog = {
     title: 'subject',
     author: 'Ramesh',
@@ -48,6 +48,30 @@ test.only('should add a new blog post', async () => {
     return blog.title
   })
   expect(title).toContain('subject')
+})
+
+test('should contain value of "likes" property as 0', async () => {
+  const newBlog = {
+    title: 'object',
+    author: 'javascript',
+    url: 'urlajavascript',
+  }
+  await api.post('/api/blogs').send(newBlog)
+  const response = await api.get('/api/blogs')
+  const likes = await response.body.map((blog) => {
+    return blog.likes
+  })
+  expect(likes).toContain(0)
+})
+
+test.only('should backend respond with status code 400 Bad Request', async () => {
+  const newBlog = {
+    author: 'python',
+    likes: 60,
+  }
+
+  const response = await api.post('/api/blogs').send(newBlog)
+  expect(response.status).toBe(400)
 })
 
 afterAll(async () => {
