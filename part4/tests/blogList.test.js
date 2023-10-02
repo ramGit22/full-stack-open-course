@@ -64,7 +64,7 @@ test('should contain value of "likes" property as 0', async () => {
   expect(likes).toContain(0)
 })
 
-test.only('should backend respond with status code 400 Bad Request', async () => {
+test('should backend respond with status code 400 Bad Request', async () => {
   const newBlog = {
     author: 'python',
     likes: 60,
@@ -72,6 +72,20 @@ test.only('should backend respond with status code 400 Bad Request', async () =>
 
   const response = await api.post('/api/blogs').send(newBlog)
   expect(response.status).toBe(400)
+})
+
+describe('blogList', () => {
+  test.only('should delete the blog based on Id and return response with status code 204', async () => {
+    const blogsAtStart = await helper.blogInDb()
+    console.log('blogs', blogsAtStart)
+    const blogToDelete = blogsAtStart[0]
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    const blogsAtEnd = await helper.blogInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlog.length - 1)
+
+    const author = await blogsAtEnd.map((blog) => blog.author)
+    expect(author).not.toContain(blogToDelete.author)
+  })
 })
 
 afterAll(async () => {

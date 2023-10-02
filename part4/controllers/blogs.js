@@ -30,4 +30,18 @@ blogRouter.post('/', (request, response) => {
     })
 })
 
+blogRouter.delete('/:id', async (req, res) => {
+  const id = req.params.id
+
+  try {
+    const result = await Blog.findByIdAndDelete(id)
+    if (result) {
+      res.status(204).end()
+    } else {
+      res.status(404).send({ error: 'Blog not found' })
+    }
+  } catch (error) {
+    res.status(500).send({ error: 'Internal server error' })
+  }
+})
 module.exports = blogRouter
