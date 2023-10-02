@@ -13,13 +13,12 @@ beforeEach(async () => {
   await newBlog.save()
 })
 
-describe('blogList', () => {
+describe('initially saved blogs', () => {
   test('should return blogs as json', async () => {
     const response = await api.get('/api/blogs')
     expect(response.status).toBe(200)
     expect(response.type).toBe('application/json')
     expect(response.body).toHaveLength(response.body.length)
-    console.log('node', process.env.NODE_ENV)
   })
 
   test('should return blog posts unique identifier property as Id', async () => {
@@ -75,7 +74,7 @@ test('should backend respond with status code 400 Bad Request', async () => {
 })
 
 describe('blogList', () => {
-  test.only('should delete the blog based on Id and return response with status code 204', async () => {
+  test('should delete the blog based on Id and return response with status code 204', async () => {
     const blogsAtStart = await helper.blogInDb()
     console.log('blogs', blogsAtStart)
     const blogToDelete = blogsAtStart[0]
@@ -85,6 +84,28 @@ describe('blogList', () => {
 
     const author = await blogsAtEnd.map((blog) => blog.author)
     expect(author).not.toContain(blogToDelete.author)
+  })
+})
+
+describe('blogList update', () => {
+  test.only('should change the number of likes', async () => {
+    const blogsAtStart = await helper.blogInDb()
+    const blogToUpdate = blogsAtStart[0]
+    console.log('blogtoupdate', blogToUpdate)
+    const newBlogData = {
+      title: 'test',
+      author: 'testtest',
+      url: 'test',
+      likes: 100,
+    }
+    const updatedBlog = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(newBlogData)
+
+    expect(updatedBlog.body.likes).toBe(100)
+    expect(updatedBlog.body.title).toBe('test')
+    expect(updatedBlog.body.author).toBe('testtest')
+    expect(updatedBlog.body.url).toBe('test')
   })
 })
 

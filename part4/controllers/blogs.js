@@ -30,9 +30,29 @@ blogRouter.post('/', (request, response) => {
     })
 })
 
+blogRouter.put('/:id', async (req, res) => {
+  const body = req.body
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+  }
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
+      new: true,
+    })
+    if (!updatedBlog) {
+      return res.status(404).send({ error: 'Blog not found' })
+    }
+    res.json(updatedBlog)
+  } catch (error) {
+    res.status(500).send({ error: 'Internal server error' })
+  }
+})
+
 blogRouter.delete('/:id', async (req, res) => {
   const id = req.params.id
-
   try {
     const result = await Blog.findByIdAndDelete(id)
     if (result) {
