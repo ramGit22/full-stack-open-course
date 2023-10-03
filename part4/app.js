@@ -4,6 +4,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const usersRouter = require('./controllers/user')
 
 const mongoUrl = config.MONGODB_URI
 mongoose
@@ -18,5 +19,6 @@ mongoose
 app.use(cors())
 app.use(express.json())
 app.use('/api/blogs', blogRouter)
+app.use('/api/users', usersRouter)
 
 module.exports = app
