@@ -1,14 +1,22 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-blogRouter.get('/', (request, response) => {
-  Blog.find({}).then((blogs) => {
+blogRouter.get('/', async (request, response) => {
+  try {
+    const blogs = await Blog.find({}).populate('user', 'username name')
     response.json(blogs)
-  })
+  } catch (error) {
+    response.status(500).send({ error: 'Internal server error' })
+  }
 })
 
-blogRouter.post('/', (request, response) => {
+blogRouter.post('/', async (request, response) => {
   const body = request.body
+  const user = await User.findOne()
+  if (!user) {
+    return response.status(400).send({ error: 'No user found in the database' })
+  }
   if (!body.title || !body.url) {
     return response.status(400).send({ error: 'title or url missing' })
   }
@@ -17,17 +25,13 @@ blogRouter.post('/', (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
+    user: user.id,
   })
 
-  blog
-    .save()
-    .then((result) => {
-      response.status(201).json(result)
-    })
-
-    .catch((error) => {
-      response.status(400).send({ error: error.message })
-    })
+  const savedBlog = await blog.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
+  response.json(savedBlog)
 })
 
 blogRouter.put('/:id', async (req, res) => {
