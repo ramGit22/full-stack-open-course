@@ -15,20 +15,11 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const body = request.body
-  if (!request.token) {
-    return response.status(401).json({ error: 'token missing' })
+  const user = request.user
+  if (!user) {
+    return response.status(401).json({ error: 'user missing or token invalid' })
   }
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
-    }
-    const user = await User.findById(decodedToken.id)
-    if (!user) {
-      return response
-        .status(400)
-        .send({ error: 'No user found in the database' })
-    }
     const blog = new Blog({
       title: body.title,
       author: body.author,
@@ -69,15 +60,12 @@ blogRouter.put('/:id', async (req, res) => {
 
 blogRouter.delete('/:id', async (req, res) => {
   const id = req.params.id
-  if (!req.token) {
-    return res.status(401).json({ error: 'token missing' })
+  const user = req.user
+  console.log('user', user)
+  if (!user) {
+    return res.status(401).json({ error: 'user missing or token invalid' })
   }
   try {
-    const decodedToken = jwt.verify(req.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token invalid' })
-    }
-    const user = await User.findById(decodedToken.id)
     const blog = await Blog.findById(id)
     if (!blog) {
       return res.status(400).send({ error: 'No blog found in the database' })
