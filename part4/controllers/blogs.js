@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken')
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 require('dotenv').config()
 
 blogRouter.get('/', async (request, response) => {
@@ -61,7 +59,6 @@ blogRouter.put('/:id', async (req, res) => {
 blogRouter.delete('/:id', async (req, res) => {
   const id = req.params.id
   const user = req.user
-  console.log('user', user)
   if (!user) {
     return res.status(401).json({ error: 'user missing or token invalid' })
   }
