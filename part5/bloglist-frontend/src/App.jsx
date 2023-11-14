@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
+import Notification from './components/Notification'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -11,12 +11,17 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState({
+    message: '',
+    isError: false,
+  })
+  const [showNotification, setShowNotification] = useState(false)
 
   useEffect(() => {
     if (user) {
       blogService.getAll().then((blogs) => setBlogs(blogs))
     }
-  }, [user, blogs])
+  }, [user])
 
   useEffect(() => {
     const storedUser = window.localStorage.getItem('loggedUser')
@@ -38,10 +43,19 @@ const App = () => {
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
+
       setUsername('')
       setPassword('')
     } catch (error) {
       console.log(error)
+      setNotification({
+        message: 'wrong username or password',
+        isError: true,
+      })
+      setShowNotification(true)
+      setTimeout(() => {
+        setShowNotification(false)
+      }, 5000)
     }
   }
 
@@ -49,20 +63,34 @@ const App = () => {
     event.preventDefault()
     const blog = await blogService.create({ title, author, url })
     setTitle('')
-
-    blogs.push(blog)
     setAuthor('')
     setUrl('')
+    setBlogs(blogs.concat(blog))
+    setNotification({
+      message: `a new blog ${blog.title} by ${blog.author} added`,
+      isError: false,
+    })
+    setShowNotification(true)
+    setTimeout(() => {
+      setShowNotification(false)
+    }, 5000) // hides the notification after 5 seconds
   }
 
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
+    setShowNotification(false)
   }
 
   if (user === null) {
     return (
       <div>
+        {showNotification && (
+          <Notification
+            message={notification.message}
+            isError={notification.isError}
+          />
+        )}
         <h2>Log in to application</h2>
         <form onSubmit={handleSubmit}>
           <div>
@@ -94,6 +122,13 @@ const App = () => {
   } else {
     return (
       <div>
+        {showNotification && (
+          <Notification
+            message={notification.message}
+            isError={notification.isError}
+          />
+        )}
+
         <h2>Blogs</h2>
         <p>{user.username} logged in</p>
         <button onClick={handleLogout}>Log Out</button>
@@ -103,6 +138,7 @@ const App = () => {
             <input
               type="text"
               name="title"
+              value={title}
               onChange={(event) => {
                 setTitle(event.target.value)
               }}
@@ -112,6 +148,7 @@ const App = () => {
             <input
               type="text"
               name="title"
+              value={author}
               onChange={(event) => {
                 setAuthor(event.target.value)
               }}
@@ -121,6 +158,7 @@ const App = () => {
             <input
               type="text"
               name="title"
+              value={url}
               onChange={(event) => {
                 setUrl(event.target.value)
               }}
