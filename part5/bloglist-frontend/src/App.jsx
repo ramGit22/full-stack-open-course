@@ -3,14 +3,14 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import CreateBlog from './components/CreateBlog'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const [createBlog, setcreateBlog] = useState(false)
+
   const [notification, setNotification] = useState({
     message: '',
     isError: false,
@@ -31,6 +31,10 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const addBlog = (newBlog) => {
+    setBlogs((prevBlogs) => [...prevBlogs, newBlog])
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -59,26 +63,19 @@ const App = () => {
     }
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-    const blog = await blogService.create({ title, author, url })
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    setBlogs(blogs.concat(blog))
-    setNotification({
-      message: `a new blog ${blog.title} by ${blog.author} added`,
-      isError: false,
-    })
-    setShowNotification(true)
-    setTimeout(() => {
-      setShowNotification(false)
-    }, 5000) // hides the notification after 5 seconds
-  }
-
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
+    setShowNotification(false)
+  }
+
+  const handleCreate = () => {
+    setcreateBlog(true)
+    setShowNotification(false)
+  }
+
+  const handleCancel = () => {
+    setcreateBlog(false)
     setShowNotification(false)
   }
 
@@ -132,40 +129,19 @@ const App = () => {
         <h2>Blogs</h2>
         <p>{user.username} logged in</p>
         <button onClick={handleLogout}>Log Out</button>
-        <form onSubmit={handleCreate}>
+        <br />
+        {createBlog ? (
           <div>
-            Title:
-            <input
-              type="text"
-              name="title"
-              value={title}
-              onChange={(event) => {
-                setTitle(event.target.value)
-              }}
+            <CreateBlog
+              setShowNotification={setShowNotification}
+              setNotification={setNotification}
+              addBlog={addBlog}
             />
-            <br />
-            Author:
-            <input
-              type="text"
-              name="title"
-              value={author}
-              onChange={(event) => {
-                setAuthor(event.target.value)
-              }}
-            />
-            <br />
-            Url:
-            <input
-              type="text"
-              name="title"
-              value={url}
-              onChange={(event) => {
-                setUrl(event.target.value)
-              }}
-            />
+            <button onClick={handleCancel}>Cancel</button>
           </div>
-          <button type="submit">Create</button>
-        </form>
+        ) : (
+          <button onClick={handleCreate}>New blog</button>
+        )}
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
