@@ -11,7 +11,6 @@ const Blog = ({ blog }) => {
   const [showView, setshowView] = useState(false)
   const handleShow = () => {
     setshowView(!showView)
-    setbuttonName('hide')
   }
 
   return (
@@ -25,7 +24,7 @@ const Blog = ({ blog }) => {
           {blog.url} <br />
           {blog.likes} <button>like</button>
           <br />
-          {blog.author}
+          {blog.user.username}
         </div>
       ) : (
         ''

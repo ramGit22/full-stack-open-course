@@ -136,6 +136,7 @@ const App = () => {
               setShowNotification={setShowNotification}
               setNotification={setNotification}
               addBlog={addBlog}
+              setBlogs={setBlogs}
             />
             <button onClick={handleCancel}>Cancel</button>
           </div>

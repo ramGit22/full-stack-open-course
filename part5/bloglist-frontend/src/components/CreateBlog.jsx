@@ -1,13 +1,21 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const CreateBlog = ({ setShowNotification, setNotification, addBlog }) => {
+const CreateBlog = ({
+  setBlogs,
+  setShowNotification,
+  setNotification,
+  addBlog,
+}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
   const handleCreate = async (event) => {
     event.preventDefault()
-    const blog = await blogService.create({ title, author, url })
+    await blogService.create({ title, author, url })
+    const blog = blogService.getAll().then((blogs) => setBlogs(blogs))
+
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -21,6 +29,7 @@ const CreateBlog = ({ setShowNotification, setNotification, addBlog }) => {
       setShowNotification(false)
     }, 5000)
   }
+
   return (
     <>
       <form onSubmit={handleCreate}>
@@ -38,7 +47,7 @@ const CreateBlog = ({ setShowNotification, setNotification, addBlog }) => {
           Author:
           <input
             type="text"
-            name="title"
+            name="author"
             value={author}
             onChange={(event) => {
               setAuthor(event.target.value)
@@ -48,7 +57,7 @@ const CreateBlog = ({ setShowNotification, setNotification, addBlog }) => {
           Url:
           <input
             type="text"
-            name="title"
+            name="url"
             value={url}
             onChange={(event) => {
               setUrl(event.target.value)
