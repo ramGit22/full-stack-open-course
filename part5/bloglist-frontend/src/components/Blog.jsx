@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, removeBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,6 +12,16 @@ const Blog = ({ blog }) => {
   const [showView, setshowView] = useState(false)
   const handleShow = () => {
     setshowView(!showView)
+  }
+
+  const handleRemove = async () => {
+    try {
+      console.log('blog', blog)
+      await blogService.remove(blog.id)
+      removeBlog(blog.id)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -24,7 +35,8 @@ const Blog = ({ blog }) => {
           {blog.url} <br />
           {blog.likes} <button>like</button>
           <br />
-          {blog.user.username}
+          {blog.user.username} <br />
+          <button onClick={handleRemove}>remove</button>
         </div>
       ) : (
         ''

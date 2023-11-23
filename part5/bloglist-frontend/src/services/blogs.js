@@ -21,4 +21,12 @@ const create = async (credentials) => {
   const request = axios.post(baseUrl, credentials, config)
   return request.then((response) => response.data)
 }
-export default { getAll, setToken, create }
+
+const remove = async (id) => {
+  console.log('token', token)
+  const config = {
+    headers: { Authorization: token },
+  }
+  return axios.delete(`${baseUrl}/${id}`, config)
+}
+export default { getAll, setToken, create, remove }

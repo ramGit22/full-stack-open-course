@@ -36,6 +36,9 @@ const App = () => {
     setBlogs((prevBlogs) => [...prevBlogs, newBlog])
   }
 
+  const removeBlog = (id) => {
+    setBlogs(blogs.filter((blog) => blog.id != id))
+  }
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -144,7 +147,7 @@ const App = () => {
           <button onClick={handleCreate}>New blog</button>
         )}
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} removeBlog={removeBlog} />
         ))}
       </div>
     )
