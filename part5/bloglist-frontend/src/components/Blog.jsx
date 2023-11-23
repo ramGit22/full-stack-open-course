@@ -15,12 +15,14 @@ const Blog = ({ blog, removeBlog }) => {
   }
 
   const handleRemove = async () => {
-    try {
-      console.log('blog', blog)
-      await blogService.remove(blog.id)
-      removeBlog(blog.id)
-    } catch (error) {
-      console.log(error)
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
+      try {
+        console.log('blog', blog)
+        await blogService.remove(blog.id)
+        removeBlog(blog.id)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
