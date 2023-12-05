@@ -37,6 +37,10 @@ blogRouter.post('/', async (request, response) => {
 
 blogRouter.put('/:id', async (req, res) => {
   const body = req.body
+  const user = req.user
+  if (!user) {
+    return res.status(401).json({ error: 'user missing or token invalid' })
+  }
   const blog = {
     title: body.title,
     author: body.author,

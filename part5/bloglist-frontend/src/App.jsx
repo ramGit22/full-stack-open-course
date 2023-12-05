@@ -39,6 +39,12 @@ const App = () => {
   const removeBlog = (id) => {
     setBlogs(blogs.filter((blog) => blog.id != id))
   }
+
+  const addLike = (updatedBlog) => {
+    setBlogs(
+      blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+    )
+  }
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -147,7 +153,12 @@ const App = () => {
           <button onClick={handleCreate}>New blog</button>
         )}
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} removeBlog={removeBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            removeBlog={removeBlog}
+            addLike={addLike}
+          />
         ))}
       </div>
     )
