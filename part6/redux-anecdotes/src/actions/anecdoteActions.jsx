@@ -11,3 +11,10 @@ export const addAnecdotes = (content) => {
     data: { content },
   }
 }
+
+export const filterAnecdotes = (payload) => {
+  return {
+    type: 'FILTER_ANECDOTE',
+    data: { payload },
+  }
+}

@@ -17,35 +17,41 @@ const asObject = (anecdote) => {
   }
 }
 
-const initialState = anecdotesAtStart.map(asObject)
+const initialState = { anecdotes: anecdotesAtStart.map(asObject), filter: '' }
 
 const reducer = (state = initialState, action) => {
-  let newState
   switch (action.type) {
     case 'VOTE': {
       const id = action.data.id
-      const anecdoteToChange = state.find((anecdote) => anecdote.id === id)
-      const changedAnecdote = {
-        ...anecdoteToChange,
-        votes: anecdoteToChange.votes + 1,
-      }
-      newState = state.map((anecdote) =>
-        anecdote.id !== id ? anecdote : changedAnecdote
+      const updatedAnecdotes = state.anecdotes.map((anecdote) =>
+        anecdote.id !== id
+          ? anecdote
+          : { ...anecdote, votes: anecdote.votes + 1 }
       )
-      break
+      return {
+        ...state,
+        anecdotes: updatedAnecdotes,
+      }
     }
+
     case 'NEW_ANECDOTE': {
       const newAnecdote = asObject(action.data.content)
-      newState = [...state, newAnecdote]
-      break
+      return {
+        ...state,
+        anecdotes: [...state.anecdotes, newAnecdote],
+      }
     }
+
+    case 'FILTER_ANECDOTE': {
+      return {
+        ...state,
+        filter: action.data.payload,
+      }
+    }
+
     default:
       return state
   }
-
-  // Sort the anecdotes based on vote count
-  newState.sort((a, b) => b.votes - a.votes)
-  return newState
 }
 
 export default reducer
