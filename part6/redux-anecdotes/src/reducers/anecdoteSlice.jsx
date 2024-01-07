@@ -19,7 +19,11 @@ const asObject = (anecdote) => {
   }
 }
 
-const initialState = { anecdotes: anecdotesAtStart.map(asObject), selected: '' }
+const initialState = {
+  anecdotes: anecdotesAtStart.map(asObject),
+  selected: '',
+  notification: '',
+}
 
 const anecdotesSlice = createSlice({
   name: 'anecdotes',
@@ -44,9 +48,22 @@ const anecdotesSlice = createSlice({
     filterAnecdotes: (state, action) => {
       state.selected = action.payload
     },
+
+    setNotification: (state, action) => {
+      state.notification = action.payload
+    },
+
+    clearNotification: (state) => {
+      state.notification = ''
+    },
   },
 })
 
-export const { voteForAnecdote, addAnecdote, filterAnecdotes } =
-  anecdotesSlice.actions
+export const {
+  voteForAnecdote,
+  addAnecdote,
+  filterAnecdotes,
+  setNotification,
+  clearNotification,
+} = anecdotesSlice.actions
 export default anecdotesSlice.reducer
