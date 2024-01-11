@@ -44,6 +44,10 @@ const anecdotesSlice = createSlice({
     setAnecdotes(state, action) {
       state.anecdotes = Array.isArray(action.payload) ? action.payload : []
     },
+
+    createAnecdote: (state, action) => {
+      state.anecdotes.push(action.payload)
+    },
   },
 })
 
@@ -54,6 +58,7 @@ export const {
   setNotification,
   clearNotification,
   setAnecdotes,
+  createAnecdote,
 } = anecdotesSlice.actions
 
 export const initializeAncedotes = () => {

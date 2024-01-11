@@ -12,6 +12,7 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeAncedotes())
   }, [dispatch])
+
   return (
     <>
       <Notification />

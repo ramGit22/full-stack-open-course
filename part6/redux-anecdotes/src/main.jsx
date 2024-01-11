@@ -9,7 +9,6 @@ const store = configureStore({
     anecdotes: anecdoteReducer,
   },
 })
-console.log('anecdoteReducer', anecdoteReducer)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
