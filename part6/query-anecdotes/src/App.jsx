@@ -79,9 +79,9 @@ const App = () => {
           message={notificationState.message}
           visible={notificationState.visible}
         />
-      </NotificationContext.Provider>
 
-      <AnecdoteForm onSubmit={handleCreate} />
+        <AnecdoteForm onSubmit={handleCreate} />
+      </NotificationContext.Provider>
 
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
