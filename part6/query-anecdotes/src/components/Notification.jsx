@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types'
+import NotificationContext from '../contexts/notificationContext'
+import { useContext } from 'react'
 
-const Notification = ({ message, visible }) => {
+const Notification = () => {
+  const { notificationState } = useContext(NotificationContext)
+  console.log('anecdote', notificationState)
+
   const style = {
     border: 'solid',
     padding: 10,
@@ -8,9 +13,9 @@ const Notification = ({ message, visible }) => {
     marginBottom: 5,
   }
 
-  if (!visible) return null
+  if (!notificationState.visible) return null
 
-  return <div style={style}>{message}</div>
+  return <div style={style}>{notificationState.message}</div>
 }
 
 Notification.propTypes = {

@@ -5,6 +5,7 @@ import Notification from './components/Notification'
 import { createAnecdote, getAnecdotes, updateVote } from './requests'
 import notificationReducer from './notificationReducer'
 import { useReducer } from 'react'
+import NotificationContext from './contexts/notificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -40,7 +41,16 @@ const App = () => {
   }
 
   const handleCreate = (anecdoteContent) => {
+    console.log('anecdoteContent', anecdoteContent)
     newAnecdoteMutation.mutate({ anecdoteContent })
+    dispatchNotification({
+      type: 'SHOW_NOTIFICATION',
+      message: `"${anecdoteContent}" added`,
+    })
+
+    setTimeout(() => {
+      dispatchNotification({ type: 'HIDE_NOTIFICATION' })
+    }, 5000)
   }
 
   const result = useQuery({
@@ -62,11 +72,15 @@ const App = () => {
   return (
     <div>
       <h3>Anecdote app</h3>
+      <NotificationContext.Provider
+        value={{ notificationState, dispatchNotification }}
+      >
+        <Notification
+          message={notificationState.message}
+          visible={notificationState.visible}
+        />
+      </NotificationContext.Provider>
 
-      <Notification
-        message={notificationState.message}
-        visible={notificationState.visible}
-      />
       <AnecdoteForm onSubmit={handleCreate} />
 
       {anecdotes.map((anecdote) => (
