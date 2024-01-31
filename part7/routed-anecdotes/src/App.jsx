@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useParams,
+} from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -20,14 +27,14 @@ const Menu = () => {
   )
 }
 
-import PropTypes from 'prop-types'
-
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <Link to={`/anecdotes/${anecdote.id}`} key={anecdote.id}>
+          <li>{anecdote.content}</li>
+        </Link>
       ))}
     </ul>
   </div>
@@ -75,11 +82,6 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
-  AnecdoteList.propTypes = {
-    anecdotes: PropTypes.array.isRequired,
-    addNew: PropTypes.func.isRequired,
-  }
-
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -110,6 +112,27 @@ const CreateNew = (props) => {
         </div>
         <button>create</button>
       </form>
+    </div>
+  )
+}
+
+const Anecdote = ({ anecdotes }) => {
+  const { id } = useParams()
+  const anecdote = anecdotes.find((a) => a.id === Number(id))
+
+  if (!anecdote) {
+    return <p>Anecdote not found.</p>
+  }
+
+  return (
+    <div>
+      <h2>
+        {anecdote.content} by {anecdote.author}
+      </h2>
+      <p>has {anecdote.votes} votes</p>
+      <p>
+        For more info see <a href={anecdote.info}>{anecdote.info}</a>
+      </p>
     </div>
   )
 }
@@ -160,6 +183,11 @@ const App = () => {
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
         <Route path="/about" element={<About />} />
+        <Route
+          path="/anecdotes/:id"
+          element={<Anecdote anecdotes={anecdotes} />}
+        />
+
         {/* You can add more routes as needed */}
       </Routes>
       <Footer />
