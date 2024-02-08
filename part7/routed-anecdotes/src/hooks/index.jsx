@@ -7,9 +7,14 @@ function useFormInput(initialValue) {
     setValue(e.target.value)
   }
 
+  const reset = () => {
+    setValue('')
+  }
+
   return {
     value,
     onChange: handleChange,
+    reset,
   }
 }
 
