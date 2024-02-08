@@ -12,8 +12,10 @@ function useFormInput(initialValue) {
   }
 
   return {
-    value,
-    onChange: handleChange,
+    input: {
+      value,
+      onChange: handleChange,
+    },
     reset,
   }
 }
