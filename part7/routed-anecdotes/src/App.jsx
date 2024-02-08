@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -8,6 +9,7 @@ import {
   useParams,
   useNavigate,
 } from 'react-router-dom'
+import useFormInput from './hooks'
 
 const Menu = () => {
   const padding = {
@@ -57,7 +59,7 @@ const About = () => (
       more general than the brief tale itself, such as to characterize a person
       by delineating a specific quirk or trait, to communicate an abstract idea
       about a person, place, or thing through the concrete details of a short
-      narrative. An anecdote is "a story with a point."
+      narrative. An anecdote is &quot;a story with a point.&quot;
     </em>
 
     <p>
@@ -79,21 +81,22 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const content = useFormInput('')
+  const author = useFormInput('')
+  const info = useFormInput('')
+
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     })
     navigate('/')
-    props.setNotification(`${content} created`)
+    props.setNotification(`${content.value} created`)
     setTimeout(() => {
       props.setNotification('')
     }, 5000)
@@ -105,27 +108,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input name="content" {...content} />
         </div>
         <div>
           author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input name="author" {...author} />
         </div>
         <div>
           url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input name="info" {...info} />
         </div>
         <button>create</button>
       </form>
