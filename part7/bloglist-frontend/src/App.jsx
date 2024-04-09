@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from './features/userSlice'
-import { fetchBlogs } from './features/blogSlice'
+import { createBlogs, fetchBlogs } from './features/blogSlice'
 // import blogService from './services/blogs'
 // import loginService from './services/login'
 
@@ -10,6 +10,9 @@ const App = () => {
   // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   // const [user, setUser] = useState(null)
 
   // useEffect(() => {
@@ -42,6 +45,10 @@ const App = () => {
     dispatch(loginUser({ username, password }))
   }
 
+  const handleCreate = (event) => {
+    event.preventDefault()
+    dispatch(createBlogs({ title, author, url }))
+  }
   return (
     <div>
       {!user ? (
@@ -70,9 +77,20 @@ const App = () => {
       ) : (
         <div>
           <h2>Blogs</h2>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          <form onSubmit={handleCreate}>
+            Title:
+            <input value={title} onChange={(e) => setTitle(e.target.value)} />
+            Author:
+            <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+            Url:
+            <input value={url} onChange={(e) => setUrl(e.target.value)} />
+            <button>Login</button>
+          </form>
+          <div style={{ margin: '10px' }}>
+            {blogs.map((blog) => (
+              <Blog key={blog.id} blog={blog} />
+            ))}
+          </div>
         </div>
       )}
     </div>

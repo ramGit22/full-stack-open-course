@@ -12,6 +12,20 @@ export const fetchBlogs = createAsyncThunk(
     if (user) {
       blogService.setToken(user.token)
       const blogs = await blogService.getAll()
+      console.log('fetchedBlogs', blogs)
+      return blogs
+    }
+  }
+)
+
+export const createBlogs = createAsyncThunk(
+  'blogs/createBlogs',
+  async (blogData, { getState }) => {
+    const { user } = getState().user
+    if (user) {
+      blogService.setToken(user.token)
+      const blogs = await blogService.create(blogData)
+      console.log('blogs', blogs)
       return blogs
     }
   }
@@ -24,6 +38,9 @@ export const blogSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchBlogs.fulfilled, (state, action) => {
       state.blogs = action.payload
+    })
+    builder.addCase(createBlogs.fulfilled, (state, action) => {
+      state.blogs = [...state.blogs, action.payload]
     })
   },
 })
