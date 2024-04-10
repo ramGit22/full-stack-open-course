@@ -3,33 +3,15 @@ import Blog from './components/Blog'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from './features/userSlice'
 import { createBlogs, fetchBlogs } from './features/blogSlice'
-// import blogService from './services/blogs'
-// import loginService from './services/login'
+import { createNotification } from './features/notificationSlice'
+import Notification from './components/Notification'
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  // const [user, setUser] = useState(null)
-
-  // useEffect(() => {
-  //   if (user) {
-  //     blogService.getAll().then((blogs) => setBlogs(blogs))
-  //   }
-  // }, [user])
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault()
-  //   const user = await loginService.login({ username, password })
-  //   console.log('user', user)
-  //   window.localStorage.setItem('loogedUser', JSON.stringify(user))
-  //   blogService.setToken(user.token)
-  //   setUser(user)
-  // }
-
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.user)
   const { blogs } = useSelector((state) => state.blogs)
@@ -48,7 +30,9 @@ const App = () => {
   const handleCreate = (event) => {
     event.preventDefault()
     dispatch(createBlogs({ title, author, url }))
+    dispatch(createNotification(title))
   }
+
   return (
     <div>
       {!user ? (
@@ -66,7 +50,7 @@ const App = () => {
             <div>
               Password:
               <input
-                type="password" // Use type="password" for security
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -76,6 +60,7 @@ const App = () => {
         </div>
       ) : (
         <div>
+          <Notification />
           <h2>Blogs</h2>
           <form onSubmit={handleCreate}>
             Title:
@@ -84,7 +69,7 @@ const App = () => {
             <input value={author} onChange={(e) => setAuthor(e.target.value)} />
             Url:
             <input value={url} onChange={(e) => setUrl(e.target.value)} />
-            <button>Login</button>
+            <button type="submit">Create</button>
           </form>
           <div style={{ margin: '10px' }}>
             {blogs.map((blog) => (

@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import useReducer from './features/userSlice'
+import userReducer from './features/userSlice'
 import blogReducer from './features/blogSlice'
+import notificationReducer from './features/notificationSlice'
 
 export const store = configureStore({
   reducer: {
-    user: useReducer,
+    user: userReducer,
     blogs: blogReducer,
+    notification: notificationReducer,
   },
 })
