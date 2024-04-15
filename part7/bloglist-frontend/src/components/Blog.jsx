@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { likeBlog } from '../features/blogSlice'
+import { likeBlog, deleteBlog } from '../features/blogSlice'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
@@ -10,12 +10,16 @@ const Blog = ({ blog }) => {
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
     dispatch(likeBlog({ id: blog.id, updatedBlogData: updatedBlog }))
   }
+
+  const handleDelete = (blog) => {
+    dispatch(deleteBlog({ id: blog.id }))
+  }
   return (
     <div>
-      {blog.title} {blog.author}{' '}
+      {`${blog.title} has ${blog.likes} likes. Author: ${blog.author} `}
       <span>
         <button onClick={() => handleLike(blog)}>Like</button>
-        <button>Delete</button>
+        <button onClick={() => handleDelete(blog)}>Delete</button>
       </span>
     </div>
   )

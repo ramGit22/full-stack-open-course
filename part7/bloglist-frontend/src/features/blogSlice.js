@@ -44,6 +44,18 @@ export const likeBlog = createAsyncThunk(
   }
 )
 
+export const deleteBlog = createAsyncThunk(
+  'blogs/deleteBlogs',
+  async ({ id }, { getState }) => {
+    const { user } = getState().user
+    if (user) {
+      blogService.setToken(user.token)
+      const response = await blogService.blogDelete(id)
+      return id
+    }
+  }
+)
+
 export const blogSlice = createSlice({
   name: 'blogs',
   initialState,
@@ -62,6 +74,10 @@ export const blogSlice = createSlice({
       if (index !== -1) {
         state.blogs[index] = action.payload
       }
+    })
+
+    builder.addCase(deleteBlog.fulfilled, (state, action) => {
+      state.blogs = state.blogs.filter((blog) => blog.id != action.payload)
     })
   },
 })
