@@ -31,6 +31,19 @@ export const createBlogs = createAsyncThunk(
   }
 )
 
+export const likeBlog = createAsyncThunk(
+  'blogs/likeBlog',
+  async ({ id, updatedBlogData }, { getState }) => {
+    const { user } = getState().user
+    if (user) {
+      blogService.setToken(user.token)
+      const updatedBlog = await blogService.likeUpdate(id, updatedBlogData)
+      console.log('updatelike', updatedBlog)
+      return updatedBlog
+    }
+  }
+)
+
 export const blogSlice = createSlice({
   name: 'blogs',
   initialState,
@@ -41,6 +54,14 @@ export const blogSlice = createSlice({
     })
     builder.addCase(createBlogs.fulfilled, (state, action) => {
       state.blogs = [...state.blogs, action.payload]
+    })
+    builder.addCase(likeBlog.fulfilled, (state, action) => {
+      const index = state.blogs.findIndex(
+        (blog) => blog.id === action.payload.id
+      )
+      if (index !== -1) {
+        state.blogs[index] = action.payload
+      }
     })
   },
 })

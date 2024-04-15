@@ -22,4 +22,13 @@ const create = (credentials) => {
   return request.then((response) => response.data)
 }
 
-export default { getAll, setToken, create }
+const likeUpdate = (id, updatedBlog) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  return axios
+    .put(`${baseUrl}/${id}`, updatedBlog, config)
+    .then((response) => response.data)
+}
+
+export default { getAll, setToken, create, likeUpdate }
