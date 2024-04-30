@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { fetchBlogPosts, setToken } from './services/blog'
+import CreateBlog from './components/CreateBlog'
 
 function App() {
   const [username, setUsername] = useState('')
@@ -19,12 +20,10 @@ function App() {
         credential
       )
       setToken(response.data.token)
-      console.log('response', response.data)
 
       return response.data
     },
   })
-  console.log('data', data)
 
   return (
     <div>
@@ -56,6 +55,7 @@ function App() {
         </div>
         <button>Login</button>
       </form>
+      <CreateBlog />
       {data?.map((post) => (
         <div>{post.title}</div>
       ))}

@@ -30,4 +30,18 @@ const fetchBlogPosts = async () => {
   }
 }
 
-export { fetchBlogPosts, setToken }
+const createBlogPost = async (credentials) => {
+  try {
+    const token = getToken()
+    const config = {
+      headers: { Authorization: token },
+    }
+    const response = await axios.post(baseUrl, credentials, config)
+    console.log('response', response.data)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export { fetchBlogPosts, setToken, createBlogPost }
