@@ -44,4 +44,12 @@ const createBlogPost = async (credentials) => {
   }
 }
 
-export { fetchBlogPosts, setToken, createBlogPost }
+const addLike = async (id, updatedBlog, token) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request = axios.put(`${baseUrl}/${id}`, updatedBlog, config)
+  return request.then((response) => response.data)
+}
+
+export { fetchBlogPosts, setToken, createBlogPost, addLike, getToken }
