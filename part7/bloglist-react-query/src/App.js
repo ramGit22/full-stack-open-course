@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { fetchBlogPosts, setToken, addLike, getToken } from './services/blog'
+import {
+  fetchBlogPosts,
+  setToken,
+  addLike,
+  getToken,
+  deletePost,
+} from './services/blog'
 import CreateBlog from './components/CreateBlog'
 
 function App() {
@@ -55,8 +61,20 @@ function App() {
     },
   })
 
-  console.log('data', data)
+  const deleteMutation = useMutation({
+    mutationFn: async (postId) => {
+      const token = getToken()
+      try {
+        await deletePost(postId, token)
+      } catch (error) {
+        console.log(error)
+      }
+    },
 
+    onSuccess: () => {
+      queryClient.invalidateQueries('posts')
+    },
+  })
   return (
     <div>
       <form
@@ -95,7 +113,7 @@ function App() {
             {post.title} has {post.likes} likes
           </div>
           <button onClick={() => likeMutation.mutate(post.id)}>Like</button>
-          <button>Delete</button>
+          <button onClick={() => deleteMutation.mutate(post.id)}>Delete</button>
         </div>
       ))}
     </div>

@@ -52,4 +52,18 @@ const addLike = async (id, updatedBlog, token) => {
   return request.then((response) => response.data)
 }
 
-export { fetchBlogPosts, setToken, createBlogPost, addLike, getToken }
+const deletePost = async (id, token) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  return axios.delete(`${baseUrl}/${id}`, config)
+}
+
+export {
+  fetchBlogPosts,
+  setToken,
+  createBlogPost,
+  addLike,
+  deletePost,
+  getToken,
+}
