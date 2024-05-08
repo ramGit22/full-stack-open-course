@@ -107,17 +107,23 @@ function App() {
         </div>
         <button>Login</button>
       </form>
-      <CreateBlog />
-      {data?.map((post) => (
-        <div>
-          {' '}
-          <div>
-            {post.title} has {post.likes} likes
-          </div>
-          <button onClick={() => likeMutation.mutate(post.id)}>Like</button>
-          <button onClick={() => deleteMutation.mutate(post.id)}>Delete</button>
-        </div>
-      ))}
+      {isLoggedIn ? (
+        <>
+          <CreateBlog />
+          {data?.map((post) => (
+            <div>
+              {' '}
+              <div>
+                {post.title} has {post.likes} likes
+              </div>
+              <button onClick={() => likeMutation.mutate(post.id)}>Like</button>
+              <button onClick={() => deleteMutation.mutate(post.id)}>
+                Delete
+              </button>
+            </div>
+          ))}
+        </>
+      ) : null}
     </div>
   )
 }
