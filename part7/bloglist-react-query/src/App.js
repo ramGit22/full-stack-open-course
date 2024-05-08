@@ -15,10 +15,12 @@ function App() {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const { data } = useQuery({
-    queryKeys: ['posts'],
+    queryKeys: ['posts', isLoggedIn],
     queryFn: fetchBlogPosts,
+    enabled: isLoggedIn,
   })
 
   const mutation = useMutation({
@@ -28,7 +30,7 @@ function App() {
         credential
       )
       setToken(response.data.token)
-
+      setIsLoggedIn(true)
       return response.data
     },
   })
