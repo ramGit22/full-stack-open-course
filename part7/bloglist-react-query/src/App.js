@@ -79,34 +79,37 @@ function App() {
   })
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          mutation.mutate({ username, password })
-        }}
-      >
-        <div>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value)
-            }}
-          />
-        </div>
-        <div>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value)
-            }}
-          />
-        </div>
-        <button>Login</button>
-      </form>
+      {!isLoggedIn ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            mutation.mutate({ username, password })
+          }}
+        >
+          <div>
+            Username:
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value)
+              }}
+            />
+          </div>
+          <div>
+            Password:
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value)
+              }}
+            />
+          </div>
+          <button>Login</button>
+        </form>
+      ) : null}
+
       {isLoggedIn ? (
         <>
           <CreateBlog />
