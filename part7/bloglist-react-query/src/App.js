@@ -12,7 +12,6 @@ import CreateBlog from './components/CreateBlog'
 
 function App() {
   const queryClient = useQueryClient()
-
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
