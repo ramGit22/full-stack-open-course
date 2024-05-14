@@ -15,6 +15,7 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loggedInUser, setIsLoggedInUser] = useState('')
 
   const { data } = useQuery({
     queryKeys: ['posts', isLoggedIn],
@@ -28,7 +29,9 @@ function App() {
         'http://localhost:3003/api/login',
         credential
       )
+      console.log('loginData', response.data)
       setToken(response.data.token)
+      setIsLoggedInUser(response.data.username)
       setIsLoggedIn(true)
       return response.data
     },
@@ -76,6 +79,10 @@ function App() {
       queryClient.invalidateQueries('posts')
     },
   })
+
+  const handleLogOut = () => {
+    setIsLoggedIn(false)
+  }
   return (
     <div>
       {!isLoggedIn ? (
@@ -111,6 +118,8 @@ function App() {
 
       {isLoggedIn ? (
         <>
+          <div>{loggedInUser} has logged in</div>
+          <button onClick={handleLogOut}>Log Out</button>
           <CreateBlog />
           {data?.map((post) => (
             <div>
