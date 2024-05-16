@@ -4,7 +4,7 @@ require('dotenv').config()
 
 blogRouter.get('/', async (request, response) => {
   try {
-    const blogs = await Blog.find({}).populate('user', 'username name')
+    const blogs = await Blog.find({}).populate('user', 'username name blogs')
     response.json(blogs)
   } catch (error) {
     response.status(500).send({ error: 'Internal server error' })

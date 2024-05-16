@@ -15,13 +15,15 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [loggedInUser, setIsLoggedInUser] = useState('')
+  const [loggedInUser, setLoggedInUser] = useState('')
+  const [selectedUser, setSelectedUser] = useState(null)
 
   const { data } = useQuery({
-    queryKeys: ['posts', isLoggedIn],
+    queryKey: ['posts', isLoggedIn],
     queryFn: fetchBlogPosts,
     enabled: isLoggedIn,
   })
+  console.log('data', data)
 
   const mutation = useMutation({
     mutationFn: async (credential) => {
@@ -31,7 +33,7 @@ function App() {
       )
       console.log('loginData', response.data)
       setToken(response.data.token)
-      setIsLoggedInUser(response.data.username)
+      setLoggedInUser(response.data.username)
       setIsLoggedIn(true)
       return response.data
     },
@@ -83,6 +85,15 @@ function App() {
   const handleLogOut = () => {
     setIsLoggedIn(false)
   }
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user)
+  }
+
+  const filteredPosts = selectedUser
+    ? data?.filter((post) => post.user.username === selectedUser.username)
+    : data
+
   return (
     <div>
       {!isLoggedIn ? (
@@ -121,18 +132,33 @@ function App() {
           <div>{loggedInUser} has logged in</div>
           <button onClick={handleLogOut}>Log Out</button>
           <CreateBlog />
-          {data?.map((post) => (
-            <div>
-              {' '}
-              <div>
-                {post.title} has {post.likes} likes
+          {filteredPosts?.map((post) => (
+            <div key={post.id}>
+              <div onClick={() => handleUserClick(post.user)}>
+                {post.user.username} has {post.user.blogs.length} blogs
               </div>
-              <button onClick={() => likeMutation.mutate(post.id)}>Like</button>
-              <button onClick={() => deleteMutation.mutate(post.id)}>
-                Delete
-              </button>
             </div>
           ))}
+          {selectedUser && (
+            <div>
+              <h3>Blogs by {selectedUser.username}</h3>
+              <button onClick={() => setSelectedUser(null)}>Back</button>
+              {filteredPosts?.map((post) => (
+                <div key={post.id}>
+                  <div>
+                    {post.user.blogs} has {''}
+                    {post.likes}
+                  </div>
+                  <button onClick={() => likeMutation.mutate(post.id)}>
+                    Like
+                  </button>
+                  <button onClick={() => deleteMutation.mutate(post.id)}>
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       ) : null}
     </div>
